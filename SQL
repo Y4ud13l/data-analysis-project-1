@@ -1,1 +1,115 @@
-
+#	Query (SQL)	Respuesta concreta
+1	SELECT COUNT(Name) FROM Artist;	En la base de datos existen 275 artistas registrados.
+2	SELECT COUNT(Title) FROM album;	En la base de datos existen 347 álbumes registrados.
+3	SELECT COUNT(Name) FROM track GROUP BY AlbumID;	En la base de datos existen 3503 canciones registrados
+4	"SELECT COUNT(Name)
+FROM track
+GROUP BY GenreID;"	En la base de datos existen 26 generos nada mas que falta los generos en el litado.
+5	"SELECT COUNT(Name)
+FROM track
+WHERE Milliseconds > 300000;
+"	En la base de datos existen 1069 Canciones que duran más de 5 minutos
+6	"SELECT COUNT(Name)
+FROM track
+WHERE UnitPrice > 0.99;"	En la base de datos existen 213 canciones que cuestan mas de $0.99
+7	"SELECT Name
+FROM track
+ORDER BY Milliseconds DESC
+LIMIT 1;
+"	En la base de daros la cancion mas larga es Occupation / Precipice
+8	SELECT Name FROM track ORDER BY UnitPrice DESC LIMIT 1;	En la base de datos la canción más cara es “Battlestar Galactica: The Story So Far”
+9	"SELECT COUNT(MediaTypeID)
+FROM track
+GROUP BY MediaTypeID;"	En la base de datos hay 5 generos musicales.
+10	"SELECT COUNT(Name)
+FROM track
+GROUP BY Composer, GenreID;"	Lista
+11	"SELECT COUNT(Name)
+FROM track"	En la base de datos hay 412 facturas emitidas
+12	"SELECT SUM(Total)
+FROM invoice;
+"	En la base de datos se han vendido en total en dinero 2328.60
+13	"SELECT BillingCountry AS Pais, SUM(Total) AS Recaudado
+FROM invoice
+GROUP BY BillingCountry;"	En la ase de datos se les han vendido 2328.60 y esta reartido en tre 24 paises.
+14	"SELECT CONCAT(customer.FirstName, ' ', customer.LastName) AS Nombre_Completo, SUM(Total) AS Total
+FROM invoice
+INNER JOIN customer ON  invoice.CustomerId = customer.CustomerId
+GROUP BY customer.FirstName, customer.LastName;"	En la base existen 54 clientes.
+15	"SELECT CONCAT(customer.FirstName, ' ', customer.LastName) AS Nombre_Completo, SUM(Total) AS Total
+FROM invoice
+INNER JOIN customer ON  invoice.CustomerId = customer.CustomerId
+GROUP BY customer.FirstName, customer.LastName LIMIT 1;"	En la base de datos el cliente Helena Holý que compro 49.62
+16	"SELECT COUNT(*)
+FROM invoiceline;"	En la base de datos hay 2240 canciones vendidas
+17	"SELECT track.Name AS Nombre, COUNT(invoiceline.TrackId) AS Cantidad
+FROM invoiceline
+INNER JOIN track ON invoiceline.TrackId = track.TrackId
+GROUP BY track.TrackId, track.Name
+ORDER BY Cantidad DESC LIMIT 10;"	Es por Lista
+18	"SELECT genre.Name AS Genero, COUNT(invoiceline.TrackId) AS Cantidad
+FROM invoiceline
+INNER JOIN track ON invoiceline.TrackId = track.TrackId
+INNER JOIN genre ON track.GenreId = genre.GenreId 
+GROUP BY genre.Name
+ORDER BY Cantidad DESC LIMIT 1;"	En la base de dato el genero mas vendido es el Rock con 835
+19	"SELECT Year(InvoiceDate) AS Año, SUM(Total) AS Cantidad
+FROM invoice
+GROUP BY Year(InvoiceDate)
+ORDER BY Año, Cantidad;"	En la base de datos las ventas por el año no registrado es de 2328.60
+20	"SELECT Month(InvoiceDate) AS Mes, SUM(Total) AS Cantidad
+FROM invoice
+GROUP BY Month(InvoiceDate)
+ORDER BY Mes, Cantidad;"	En la base de datos las ventas por el mes no registrado es de 2328.60
+21	"SELECT Country AS País, COUNT(CustomerId) AS Cantidad
+FROM customer
+GROUP BY Country
+ORDER BY Cantidad DESC;"	En la base de datos hay 24 paises en la lista se desglosa los clientes por país
+22	"SELECT City AS Ciudad, COUNT(CustomerId) AS Cantidad
+FROM customer
+GROUP BY City
+ORDER BY Cantidad DESC;"	En la base de datos hay 53 ciudades en la lista se desglosa los clientes por ciudad
+23	"SELECT CONCAT(employee.FirstName,' ',employee.LastName) AS Nombre_Empleado,
+       COUNT(CustomerId) AS Clientes_atendidos
+FROM customer
+INNER JOIN employee ON customer.SupportRepId = employee.EmployeeId
+GROUP BY employee.EmployeeId, employee.FirstName, employee.LastName
+ORDER BY Clientes_atendidos DESC;"	En la base de datos son 3 vendedores y cada uno tiene sus clientes atendidos mostrado en la lista anterior
+24	"SELECT CONCAT(employee.FirstName,' ',employee.LastName) AS Nombre_Completo, 
+       SUM(Total) AS Total_Venta
+FROM invoice
+INNER JOIN customer ON invoice.CustomerId = customer.CustomerId
+INNER JOIN employee ON employee.EmployeeId = customer.SupportRepId
+GROUP BY employee.EmployeeId, employee.FirstName, employee.LastName
+ORDER BY Total_Venta DESC
+LIMIT 1;
+"	En la base de datos el empleado Jane Peacock es el que vende mas de todos los empleados
+25	"SELECT CONCAT(employee.FirstName,' ',employee.LastName) AS Nombre_Empleados,
+       COUNT(customer.CustomerId) AS Cantidad_Clientes
+FROM customer
+INNER JOIN employee ON employee.EmployeeId = customer.SupportRepId
+GROUP BY employee.EmployeeId, employee.FirstName, employee.LastName
+ORDER BY Nombre_Empleados ASC;
+"	En la base de datos son 3 vendedores y cada uno tiene asicado los siguientes clientes
+26	"SELECT CONCAT(c.FirstName, ' ', c.LastName) AS Nombre_Cliente
+FROM customer c
+LEFT JOIN invoice i ON c.CustomerId = i.CustomerId
+WHERE i.InvoiceId IS NULL;"	En la base de datos no hay clientes con 0 ventas
+27	"SELECT Title AS Nombre_Album
+FROM album
+INNER JOIN track ON album.AlbumId = track.AlbumId
+INNER JOIN invoiceline ON invoiceline.TrackId = track.TrackId
+JOIN invoice ON invoice.InvoiceId = invoiceline.InvoiceId
+WHERE invoice.Total IS NULL;"	En la base de datos existen ventas en todos los albums
+28	"SELECT BillingCountry AS Pais
+FROM invoice
+GROUP BY BillingCountry
+HAVING COUNT(CASE WHEN  Total > 0 THEN 1 ELSE NULL END) = 0;"	En la base de datos existen ventas en todos los albums por pais
+29	"SELECT genre.Name AS Nombre_genero
+FROM genre
+JOIN track 
+  ON genre.GenreId = track.GenreId
+LEFT JOIN invoiceline 
+  ON invoiceline.TrackId = track.TrackId
+GROUP BY genre.GenreId, genre.Name
+HAVING COUNT(invoiceline.TrackId) = 0;"	En la base de datos la Opera es el genero musical que no tiene ventas.
